@@ -43,21 +43,14 @@ public class RobotController : MonoBehaviour
         {
             Debug.LogError("플레이어가 설정되지 않았습니다!");
         }
+
+        playerForward = player.forward;
+        playerPosition = player.position + playerForward * 3f;
+
     }
 
     void Update()
     {
-        // E 키를 눌렀을 때 로봇이 플레이어를 향해
-        if (Input.GetKeyDown(KeyCode.E) && !isParking)
-        {
-            playerForward = player.forward;
-            playerPosition = player.position + playerForward * 3f;
-            iscall = true;
-        }
-        if (Input.GetKeyUp(KeyCode.E))
-        {
-            iscall = false;
-        }
         if (iscall)
         {
             MoveToPlayer();
@@ -72,6 +65,19 @@ public class RobotController : MonoBehaviour
             ParkSmoothly();
         }
     }
+
+    public void IsCall()
+    {
+        iscall = true;
+        StartCoroutine(Delay(2));
+    }
+
+    IEnumerator Delay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        iscall = false;
+    }
+
 
     void MoveToPlayer()
     {
