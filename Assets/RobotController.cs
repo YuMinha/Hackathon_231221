@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,6 +13,11 @@ public class RobotController : MonoBehaviour
     public Transform home;
     public Transform busstop;
 
+    public NewBehaviourScript newBehaviourScript;
+
+    public MonoBehaviour gohome;
+    public List<GameObject> waypoints;
+
     private Transform targetTransform;
     private bool isGoTo;
     private bool iscall;
@@ -20,11 +28,15 @@ public class RobotController : MonoBehaviour
     private float parkingDistance = 2f;
     private NavMeshAgent navMeshAgent;
 
+    private Transform initTransform;
+
+   
+
     void Start()
     {
         // NavMeshAgent 컴포넌트 가져오기
         navMeshAgent = GetComponent<NavMeshAgent>();
-
+        initTransform = transform;
         isGoTo = false;
         // 만약 플레이어가 설정되지 않았다면, 예외처리
         if (player == null)
@@ -71,18 +83,23 @@ public class RobotController : MonoBehaviour
     {
         // NavMeshAgent를 사용하여 플레이어의 위치로 이동
         navMeshAgent.SetDestination(targetTransform.position);
+        if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance < 0.1f)
+        {
+
+            Debug.Log("도착");
+            this.enabled = false; // 스크립트 비활성화
+            gohome.enabled = true; // GoHome 스크립트 활성화
+        }
     }
 
     public void IsGoTo(bool set)
     {
         isGoTo = set;
     }
-
     public void isCall()
     {
         iscall = true;
     }
-
     public void MoveToSupermarket()
     {
         targetTransform = supermarket;
@@ -104,10 +121,17 @@ public class RobotController : MonoBehaviour
         targetTransform = hospital;
     }
 
+    public void Walking()
+    {
+        this.enabled = false; // 스크립트 비활성화
+        newBehaviourScript.enabled = true; // GoHome 스크립트 활성화
+    }
+
     void ParkSmoothly()
     {
         Debug.Log("돌기 시작");
         float disToPosition = Vector3.Distance(transform.position, playerPosition);
+        Debug.Log("로봇 위치와 플레이어 위치의 거리: " + disToPosition);
 
         if (disToPosition < parkingDistance)
         {
@@ -116,11 +140,13 @@ public class RobotController : MonoBehaviour
 
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 3f);
 
-            if (disToPosition < 0.1f)
+            if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance < 0.1f)
             {
                 isParking = false;
+                iscall = false;
                 Debug.Log("뒤돌기 완");
             }
         }
     }
+
 }
