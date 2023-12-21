@@ -4,6 +4,12 @@ using UnityEngine.AI;
 public class RobotController : MonoBehaviour
 {
     public Transform player;
+    public Transform supermarket;
+    public Transform hospital;
+    public Transform stadium;
+    public Transform home;
+    public Transform busstop;
+
     private NavMeshAgent navMeshAgent;
 
     void Start()
@@ -30,6 +36,6 @@ public class RobotController : MonoBehaviour
     void MoveToPlayer()
     {
         // NavMeshAgent를 사용하여 플레이어의 위치로 이동
-        navMeshAgent.SetDestination(player.position);
+        navMeshAgent.SetDestination(hospital.position);
     }
 }
