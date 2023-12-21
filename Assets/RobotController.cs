@@ -36,6 +36,6 @@ public class RobotController : MonoBehaviour
     void MoveToPlayer()
     {
         // NavMeshAgent를 사용하여 플레이어의 위치로 이동
-        navMeshAgent.SetDestination(hospital.position);
+        navMeshAgent.SetDestination(player.position);
     }
 }
