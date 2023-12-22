@@ -12,6 +12,7 @@ public class RobotController : MonoBehaviour
     public Transform stadium;
     public Transform home;
     public Transform busstop;
+    public Transform walk;
 
     public NewBehaviourScript newBehaviourScript;
 
@@ -30,7 +31,7 @@ public class RobotController : MonoBehaviour
 
     private Transform initTransform;
 
-   
+    private bool talk = false;
 
     void Start()
     {
@@ -93,14 +94,27 @@ public class RobotController : MonoBehaviour
         {
 
             Debug.Log("도착");
-            this.enabled = false; // 스크립트 비활성화
-            gohome.enabled = true; // GoHome 스크립트 활성화
+            StartCoroutine(DelayM(4));
+            
         }
     }
+    IEnumerator DelayM(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        this.enabled = false; // 스크립트 비활성화
+        gohome.enabled = true; // GoHome 스크립트 활성화
+    }
+
+    
 
     public void IsGoTo(bool set)
     {
         isGoTo = set;
+        if(talk)
+        {
+            Talk a = GetComponent<Talk>();
+            a.Fun();
+        }
     }
     public void isCall()
     {
@@ -123,14 +137,16 @@ public class RobotController : MonoBehaviour
         targetTransform = stadium;
     }
     public void MoveToHospital()
-    {
+    {   
         targetTransform = hospital;
+        talk = true;
+  
     }
 
     public void Walking()
     {
-        this.enabled = false; // 스크립트 비활성화
-        newBehaviourScript.enabled = true; // GoHome 스크립트 활성화
+        targetTransform = walk;
+        talk = true;
     }
 
     void ParkSmoothly()

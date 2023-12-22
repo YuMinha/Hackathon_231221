@@ -12,6 +12,8 @@ public class gohome : MonoBehaviour
     void Start()
     {
         navi = GetComponent<NavMeshAgent>();
+        Talk a = GetComponent<Talk>();
+        a.Fun2();
     }
 
     // Update is called once per frame
